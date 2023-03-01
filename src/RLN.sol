@@ -78,10 +78,11 @@ contract RLN {
 
     function withdraw(uint256 secret, address receiver) external {
         uint256 pubkey = hash(secret);
-        require(members[pubkey] != address(0), "RLN, _withdraw: member doesn't exist");
+        address _memberAddress = members[pubkey];
+        require(_memberAddress != address(0), "RLN, _withdraw: member doesn't exist");
         require(receiver != address(0), "RLN, _withdraw: empty receiver address");
 
-        if (members[pubkey] == receiver) {
+        if (_memberAddress == receiver) {
             token.safeTransfer(receiver, MEMBERSHIP_DEPOSIT);
             emit MemberWithdrawn(pubkey);
         } else {
