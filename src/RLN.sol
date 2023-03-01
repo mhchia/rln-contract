@@ -5,6 +5,10 @@ import {IPoseidonHasher} from "./PoseidonHasher.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+// error for "RLN, register: set is full"
+error SetIsFull(uint256 pubkeyIndex, uint256 setSize);
+
+
 contract RLN {
     // ERC20 staking support
     using SafeERC20 for IERC20;
@@ -52,7 +56,9 @@ contract RLN {
     }
 
     function register(uint256 pubkey) external {
-        require(pubkeyIndex < SET_SIZE, "RLN, register: set is full");
+        if (pubkeyIndex >= SET_SIZE) {
+            revert SetIsFull(pubkeyIndex, SET_SIZE);
+        }
 
         token.safeTransferFrom(msg.sender, address(this), MEMBERSHIP_DEPOSIT);
         _register(pubkey);
