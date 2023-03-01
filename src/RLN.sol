@@ -18,6 +18,7 @@ contract RLN {
 
     // Fee percentage
     uint256 public constant FEE_PERCENTAGE = 5;
+    uint256 public constant FEE_PERCENTAGE_DENOMINATOR = 100;
     // Fee amount
     uint256 public immutable FEE;
 
@@ -43,7 +44,8 @@ contract RLN {
         SET_SIZE = 1 << depth;
 
         FEE_RECEIVER = feeReceiver;
-        FEE = FEE_PERCENTAGE * MEMBERSHIP_DEPOSIT / 100;
+        require(FEE_PERCENTAGE <= FEE_PERCENTAGE_DENOMINATOR, "RLN, constructor: invalid fee percentage");
+        FEE = FEE_PERCENTAGE * MEMBERSHIP_DEPOSIT / FEE_PERCENTAGE_DENOMINATOR;
 
         poseidonHasher = IPoseidonHasher(_poseidonHasher);
         token = IERC20(_token);
